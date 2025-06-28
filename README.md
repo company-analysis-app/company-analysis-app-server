@@ -5,13 +5,18 @@
 
 ## 🚀 설치 및 실행 방법
 
-### 1. 환경설정
+### 1. 저장소 클론
+```bash
+$ git clone https://github.com/HanbinSeong/company-analysis-app-web.git
+$ cd company-analysis-app-web
+```
+### 2. 환경설정
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. `.env` 설정
-.env 파일을 프로젝트 루트에 생성하여 환경변수를 추가합니다.
+### 3. `.env` 설정
+.env 파일을 프로젝트 루트에 생성하여 환경변수를 추가합니다. (예시)
 ```env
 DATABASE_URL=mysql+pymysql://user:password@localhost/companydb
 SECRET_KEY=your_secret_key
