@@ -58,9 +58,7 @@ backend
 │   └── recommendation.py
 ├── database.py                 # 데이터베이스 연결 및 세션 관리
 ├── main.py                     # FastAPI 애플리케이션 설정 및 라우터 등록
-├── requirements.txt
-├── .env
-├── .gitignore
+├── requirements.txt            # Python 필요 패키지 라이브러리 목록
 └── README.md
 ```
 
