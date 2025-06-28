@@ -37,20 +37,20 @@ uvicorn main:app --reload
 
 ## 🛠️ 프로젝트 구조
 ```
-backend
-├── models                      # 데이터베이스 ORM 모델 정의
+company-analysis-app-server/
+├── models/                      # 데이터베이스 ORM 모델 정의
 │   ├── __init__.py
 │   ├── user.py
 │   ├── company.py
 │   ├── category.py
 │   └── favorite.py
-├── routers                     # API 라우터
+├── routers/                     # API 라우터
 │   ├── __init__.py
 │   ├── auth.py
 │   ├── companies.py
 │   ├── users.py
 │   └── recommendations.py
-├── schemas                     # 데이터 검증 스키마 정의
+├── schemas/                     # 데이터 검증 스키마 정의
 │   ├── __init__.py
 │   ├── user.py
 │   ├── company.py
