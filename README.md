@@ -7,7 +7,7 @@
 
 ### 1. 저장소 클론
 ```bash
-$ git clone https://github.com/HanbinSeong/company-analysis-app-server.git
+$ git clone https://github.com/company-analysis-app/company-analysis-app-server.git
 $ cd company-analysis-app-server
 ```
 ### 2. 환경설정
