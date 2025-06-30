@@ -9,6 +9,7 @@ from database import get_db
 from models.user import User
 from schemas.token import Token
 from schemas.user import UserOut
+from starlette.responses import RedirectResponse
 
 
 router = APIRouter(tags=["auth"])
@@ -69,7 +70,9 @@ async def auth_callback_google(request: Request, db: Session = Depends(get_db)):
         db.refresh(user)
     # 2) JWT 발급
     access_token = create_access_token({"user_id": user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    frontend = os.getenv("FRONTEND_URL")
+    redirect_to = f"{frontend}/dashboard?token={access_token}"
+    return RedirectResponse(redirect_to)
 
 
 async def get_current_user(
