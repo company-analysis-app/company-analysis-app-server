@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Response
-from routers import auth, dart
+from routers import auth, users, dart
 from database import Base, engine
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,4 +38,5 @@ Base.metadata.create_all(bind=engine)
 
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(dart.router, prefix='/darts', tags=["Darts"])
