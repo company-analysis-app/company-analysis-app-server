@@ -3,18 +3,18 @@ from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Request, HTTPException, Depends, Security
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-import os
-from datetime import datetime, timedelta
-import jwt
-from database import get_db  # DB 세션 의존성
+from datetime import datetime, timedelta, timezone
+import jwt, uuid, os
+from database import get_db
 from models.user import User
-
+from schemas.token import Token
+from schemas.user import UserOut
 
 
 router = APIRouter(tags=["auth"])
 
 SECRET = os.getenv("SECRET_KEY")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login/google")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/callback/google")
 
 oauth = OAuth()
 oauth.register(
@@ -25,6 +25,7 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )  # 구글 OAuth2 클라이언트 등록 :contentReference[oaicite:1]{index=1}
 
+
 @router.get("/login/google")
 async def login_google(request: Request):
     redirect_uri = request.url_for("auth_callback_google")
@@ -32,13 +33,19 @@ async def login_google(request: Request):
 
 
 def create_access_token(data: dict, expires_seconds: int = 3600):
+    now = datetime.now(timezone.utc)
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(seconds=expires_seconds)
-    to_encode.update({"exp": expire})
+    to_encode.update(
+        {
+            "iat": now,
+            "jti": str(uuid.uuid4()),
+            "exp": now + timedelta(seconds=expires_seconds),
+        }
+    )
     return jwt.encode(to_encode, SECRET, algorithm="HS256")
 
 
-@router.get("/callback/google", name="auth_callback_google")
+@router.get("/callback/google", name="auth_callback_google", response_model=Token)
 async def auth_callback_google(request: Request, db: Session = Depends(get_db)):
     token = await oauth.google.authorize_access_token(request)
     user_info = token.get("userinfo")
@@ -64,7 +71,10 @@ async def auth_callback_google(request: Request, db: Session = Depends(get_db)):
     access_token = create_access_token({"user_id": user.id})
     return {"access_token": access_token, "token_type": "bearer"}
 
-async def get_current_user(token: str = Security(oauth2_scheme), db: Session = Depends(get_db)):
+
+async def get_current_user(
+    token: str = Security(oauth2_scheme), db: Session = Depends(get_db)
+):
     try:
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
         user_id = payload.get("user_id")
@@ -74,3 +84,8 @@ async def get_current_user(token: str = Security(oauth2_scheme), db: Session = D
     if not user:
         raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
     return user
+
+
+@router.get("/me", response_model=UserOut)
+async def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
