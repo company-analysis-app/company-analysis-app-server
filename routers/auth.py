@@ -12,7 +12,7 @@ from schemas.user import UserOut
 from starlette.responses import RedirectResponse
 
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(tags=["Auth"])
 
 SECRET = os.getenv("SECRET_KEY")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/callback/google")
