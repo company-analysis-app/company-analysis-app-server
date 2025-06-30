@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, JSON, DateTime, UniqueConstraint
+from sqlalchemy.ext.mutable import MutableList
 from database import Base
 from datetime import datetime
 import pytz
@@ -21,9 +22,8 @@ class User(Base):
     oauth_provider = Column(String(50), nullable=False)
     oauth_sub = Column(String(100), nullable=False)
 
-    # JSON 컬럼 기본값은 Python 레벨로 처리 (MySQL JSON 컬럼은 기본값 설정 불가)
-    preferences = Column(JSON, nullable=False, default=list)
-    favorites = Column(JSON, nullable=False, default=list)
+    preferences    = Column(MutableList.as_mutable(JSON), default=list, nullable=False)
+    favorites      = Column(MutableList.as_mutable(JSON), default=list, nullable=False)
 
     # 생성 시각 (한국 시간)
     created_at = Column(
