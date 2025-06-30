@@ -4,7 +4,7 @@ from database import Base
 from datetime import datetime
 import pytz
 
-
+ASIA_SEOUL_TZ = "Asia/Seoul"
 class User(Base):
     __tablename__ = "users"
     __table_args__ = (
@@ -28,13 +28,13 @@ class User(Base):
     # 생성 시각 (한국 시간)
     created_at = Column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("Asia/Seoul")),
+        default=lambda: datetime.now(pytz.timezone("ASIA_SEOUL_TZ")),
         nullable=False,
     )
     # 수정 시각 (한국 시간)
     updated_at = Column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("Asia/Seoul")),
-        onupdate=lambda: datetime.now(pytz.timezone("Asia/Seoul")),
+        default=lambda: datetime.now(pytz.timezone("ASIA_SEOUL_TZ")),
+        onupdate=lambda: datetime.now(pytz.timezone("ASIA_SEOUL_TZ")),
         nullable=False,
     )

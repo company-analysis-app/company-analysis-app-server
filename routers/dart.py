@@ -2,12 +2,10 @@ from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from models.dart import Darts
 from database import get_db
-from dotenv import load_dotenv
 import os
 import requests as rq
 import pandas as pd
 
-load_dotenv()
 
 DART_API = os.getenv("dart_api_key")
 
