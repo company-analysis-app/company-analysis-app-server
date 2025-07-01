@@ -21,16 +21,17 @@ class SummaryRequest(BaseModel):
     company_name: str = Field(..., description="기업 이름")
     financial: Dict[
         str, Dict
-    ]  # ex: {"2022": {...}, "2023": {...}} 형태 :contentReference[oaicite:1]{index=1}
+    ]  # ex: {"2022": {...}, "2023": {...}} 형태
     news: Dict[
         str, List[NewsArticle]
-    ]  # ex: {"articles": [ {...}, {...} ]} 형태 :contentReference[oaicite:2]{index=2}
+    ]  # ex: {"articles": [ {...}, {...} ]} 형태
 
 
 class SummaryOut(SummaryBase):
     id: int
     summary_text: str
     created_at: datetime
+    updated_at: datetime   # ← 추가
 
     class Config:
         orm_mode = True
