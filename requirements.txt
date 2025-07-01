@@ -3,6 +3,7 @@ uvicorn[standard]
 sqlalchemy
 pydantic
 python-dotenv
+PyJWT
 PyMySQL
 authlib
 python-jose[cryptography]
@@ -12,3 +13,5 @@ httpx
 starlette[full]
 pytz
 asyncio
+pandas
+

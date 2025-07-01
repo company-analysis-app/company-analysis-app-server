@@ -1,13 +1,11 @@
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from models.dart import Darts
 from database import get_db
-from dotenv import load_dotenv
 import os
 import requests as rq
 import pandas as pd
 
-load_dotenv()
 
 DART_API = os.getenv("dart_api_key")
 
@@ -79,5 +77,19 @@ def get_values(code: str):
     return result
 
 
+@router.get("/getInfos")
+def get_indu_code(code: str):
+   url = f"https://opendart.fss.or.kr/api/company.json?crtfc_key={DART_API}&corp_code={code}"
+   data = rq.get(url)
+   result = data.json()
+   return result
 
+
+@router.get("/mapping")
+def code_mapping(code: int):
+   df = pd.read_csv('산업코드.csv')
+   match = df[df['산업코드'] == code]
+   if match.empty:
+        raise HTTPException(status_code=404, detail="해당 코드를 찾을 수 없습니다.")
+   return match["산업코드명"].iloc[0]
 

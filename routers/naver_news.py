@@ -6,6 +6,7 @@ import os
 import html
 import asyncio
 
+
 router = APIRouter()
 CATEGORIES = ["전체", "채용", "주가", "노사", "IT"]
 
