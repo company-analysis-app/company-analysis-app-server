@@ -75,7 +75,7 @@ async def get_news(query: str = Query(...)):
 
         return {"articles": articles}
 
-@router.get("/naver/news/all")
+@router.get("/news/all")
 async def get_all_news(company: str = Query(...)):
     tasks = []
     for cat in CATEGORIES:

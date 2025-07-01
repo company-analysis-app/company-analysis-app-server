@@ -11,3 +11,4 @@ requests
 httpx
 starlette[full]
 pytz
+asyncio
