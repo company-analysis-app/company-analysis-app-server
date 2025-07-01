@@ -9,7 +9,6 @@ from database import Base, engine
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = FastAPI()
 
 origins = [

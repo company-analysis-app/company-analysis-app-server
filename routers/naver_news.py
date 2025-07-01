@@ -3,6 +3,7 @@ from fastapi import APIRouter, Query
 from typing import List
 import httpx
 import os
+import html
 
 
 router = APIRouter()
@@ -34,8 +35,9 @@ async def get_news(query: str = Query(...)):
         result = response.json()
 
         articles = [
-            {
-                "title": item["title"].replace("<b>", "").replace("</b>", ""),
+            { 
+                "title": html.unescape(item["title"].replace("<b>", "").replace("</b>", "")),
+                "url": item["link"],
                 "url": item["link"],
                 "pubDate": item["pubDate"]
             }
