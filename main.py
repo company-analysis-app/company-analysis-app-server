@@ -1,12 +1,14 @@
-from fastapi import FastAPI, Request, Response
-from routers import auth, users, dart, naver_news
-from database import Base, engine
-from starlette.middleware.sessions import SessionMiddleware
-from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
 load_dotenv(override=True)
+
+from fastapi import FastAPI, Request, Response
+from routers import auth, users, dart, naver_news, summary
+from database import Base, engine
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -44,3 +46,4 @@ app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(dart.router, prefix="/darts", tags=["Darts"])
 app.include_router(naver_news.router, prefix="/naver", tags=["Naver News"])
+app.include_router(summary.router, prefix="/summary", tags=["Summary"])
