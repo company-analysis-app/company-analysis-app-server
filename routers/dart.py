@@ -103,7 +103,7 @@ def get_values(code: str):
 
 
 
-@router.post("/company/addfavorites")
+@router.post("/company/addfavorites/{corp_code}")
 def add_favorites(corp_code: int, db: Session = Depends(get_db)):
     data = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == corp_code).first()
     if not data:
@@ -115,7 +115,7 @@ def add_favorites(corp_code: int, db: Session = Depends(get_db)):
     return {"favorite_count": data.favorite_count}
 
 
-@router.post("/company/subfavorites")
+@router.post("/company/subfavorites/{corp_code}")
 def sub_favorites(corp_code: int, db: Session = Depends(get_db)):
     data = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == corp_code).first()
     if not data:
