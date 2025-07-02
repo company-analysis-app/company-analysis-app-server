@@ -40,6 +40,7 @@ def get_best_companies(db: Session=Depends(get_db)):
         db.query(
             Darts.corp_code,
             Darts.corp_name,
+            CompanyOverviews.favorite_count,
         )
         .join(CompanyOverviews, Darts.corp_code == CompanyOverviews.corp_code)
         .order_by(CompanyOverviews.favorite_count.desc())
@@ -54,7 +55,8 @@ def get_best_companies(db: Session=Depends(get_db)):
     for row in best_results:
         result_list.append({
             "corp_code": row.corp_code,
-            "corp_name": row.corp_name
+            "corp_name": row.corp_name,
+            "favorite_count": row.favorite_count,
         })
 
     return result_list
