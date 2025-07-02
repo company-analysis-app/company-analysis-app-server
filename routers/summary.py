@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.logger import logger
 from sqlalchemy.orm import Session
 from database import get_db
 from services.groq_service import summarize
@@ -36,14 +37,14 @@ async def summarize_with_client_data(
         )
 
     fin_text = format_financial(req.financial)
-    news_text = format_news(req.news.get("전체", []))
+    news_text = format_news(req.news.get("채용", []))
 
     # 3) Groq 요약 호출
     try:
         summary_text = await summarize(req.company_name, fin_text, news_text)
-    except Exception:
-        raise HTTPException(502, detail="Groq 요약 서비스 오류")
-
+    except Exception as e:
+        logger.exception("Summary endpoint error")  # 전체 스택트레이스 로깅
+        raise HTTPException(status_code=500, detail="요약 처리 중 오류가 발생했습니다.")
     # 4) SummaryCreate 스키마로 데이터 준비
     summary_data = SummaryCreate(
         company_name=req.company_name, summary_text=summary_text
