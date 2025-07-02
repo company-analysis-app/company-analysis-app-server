@@ -13,16 +13,39 @@ DART_API = os.getenv("dart_api_key")
 
 router = APIRouter()
 
-@router.get("/")
-def get_bords(name: str, db: Session=Depends(get_db)):
-    darts = db.query(
-        Darts.corp_code,
-    ).filter(Darts.corp_name == name).first()
+@router.get("/getInfos")
+def get_company_info(name: str, db: Session = Depends(get_db)):
+    result = (
+        db.query(
+            Darts.corp_code,
+            Darts.corp_name,
+            CompanyOverviews.adres,
+            CompanyOverviews.corp_cls,
+            CompanyOverviews.est_dt,
+            CompanyOverviews.hm_url,
+            CompanyOverviews.induty_name
+        )
+        .join(CompanyOverviews, Darts.corp_code == CompanyOverviews.corp_code)
+        .filter(Darts.corp_name == name)
+        .first()
+    )
 
-    if darts is None:
+    if result is None:
         return {"message": "해당 회사명을 찾을 수 없습니다."}
 
-    return darts[0]
+    final_result = {
+        "corp_code": result.corp_code,
+        "corp_name": result.corp_name,
+        "adres": result.adres,
+        "corp_cls": result.corp_cls,
+        "est_dt": result.est_dt,
+        "hm_url": result.hm_url,
+        "induty_name": result.induty_name,
+    }
+
+    return final_result
+
+
 
 @router.get("/getValues")
 def get_values(code: str):
@@ -78,9 +101,4 @@ def get_values(code: str):
 
     return result
 
-
-@router.get("/getInfos")
-def get_infos(code: str, db:Session=Depends(get_db)):
-    result = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == code).first()
-    return result
 
