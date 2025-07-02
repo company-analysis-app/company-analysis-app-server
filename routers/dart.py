@@ -102,3 +102,22 @@ def get_values(code: str):
     return result
 
 
+
+@router.post("/company/favorites")
+def add_favorites(id: int, db: Session = Depends(get_db)):
+    data = 
+
+    if result is None:
+        return {"message": "해당 회사명을 찾을 수 없습니다."}
+
+    final_result = {
+        "corp_code": result.corp_code,
+        "corp_name": result.corp_name,
+        "adres": result.adres,
+        "corp_cls": result.corp_cls,
+        "est_dt": result.est_dt,
+        "hm_url": result.hm_url,
+        "induty_name": result.induty_name,
+    }
+
+    return final_result
