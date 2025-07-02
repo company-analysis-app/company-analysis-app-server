@@ -1,7 +1,6 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from models.dart import Darts
-from models.company_overview import CompanyOverviews
 from database import get_db
 import os
 
@@ -32,10 +31,4 @@ def get_bords(keyword: str, db: Session=Depends(get_db)):
         })
 
     return result_list
-
-
-# @router.get("/getInfos")
-# def get_infos(code: str, db:Session=Depends(get_db)):
-#     result = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == code).first()
-#     return result
 
