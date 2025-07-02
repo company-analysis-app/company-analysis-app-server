@@ -4,7 +4,7 @@ import os
 load_dotenv(override=True)
 
 from fastapi import FastAPI, Request, Response
-from routers import auth, users, dart, naver_news, summary
+from routers import auth, users, dart, naver_news, summary, dart_search
 from database import Base, engine
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,3 +46,4 @@ app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(dart.router, prefix="/darts", tags=["Darts"])
 app.include_router(naver_news.router, prefix="/naver", tags=["Naver News"])
 app.include_router(summary.router, prefix="/summary", tags=["Summary"])
+app.include_router(dart_search.router, prefix="/dartsSearch", tags=["DartsSearch"])
