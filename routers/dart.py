@@ -103,21 +103,27 @@ def get_values(code: str):
 
 
 
-@router.post("/company/favorites")
-def add_favorites(id: int, db: Session = Depends(get_db)):
-    data = 
+@router.post("/company/addfavorites")
+def add_favorites(corp_code: int, db: Session = Depends(get_db)):
+    data = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == corp_code).first()
+    if not data:
+        raise HTTPException(status_code=404, detail="해당 기업을 찾을 수 없습니다.")
+    
+    data.favorite_count += 1
+    db.commit()
+    db.refresh(data)
+    return {"favorite_count": data.favorite_count}
 
-    if result is None:
-        return {"message": "해당 회사명을 찾을 수 없습니다."}
 
-    final_result = {
-        "corp_code": result.corp_code,
-        "corp_name": result.corp_name,
-        "adres": result.adres,
-        "corp_cls": result.corp_cls,
-        "est_dt": result.est_dt,
-        "hm_url": result.hm_url,
-        "induty_name": result.induty_name,
-    }
-
-    return final_result
+@router.post("/company/subfavorites")
+def sub_favorites(corp_code: int, db: Session = Depends(get_db)):
+    data = db.query(CompanyOverviews).filter(CompanyOverviews.corp_code == corp_code).first()
+    if not data:
+        raise HTTPException(status_code=404, detail="해당 기업을 찾을 수 없습니다.")
+    
+    if data.favorite_count > 0:
+        data.favorite_count -= 1
+        db.commit()
+        db.refresh(data)
+    
+    return {"favorite_count": data.favorite_count}
