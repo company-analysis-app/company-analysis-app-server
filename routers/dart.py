@@ -48,7 +48,7 @@ def get_values(code: str):
     df = pd.DataFrame(data["list"])
     df_cfs = df[df["fs_div"] == "CFS"]
 
-    keywords = ["매출액", "영업이익", "당기순이익", "자본총계"]
+    keywords = ["매출액", "영업이익", "당기순이익", "자본총계", "자산총계"]
     df_filtered = df_cfs[
         df_cfs["account_nm"].apply(lambda x: any(k in x for k in keywords))
     ]
