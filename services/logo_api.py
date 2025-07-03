@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from sqlalchemy.orm import Session
 from models.company_overview import CompanyOverviews
 
-LOGO_PUBLISHABLE_KEY = os.getenv("LOGO_PUBLISHABLE_KEY")
+LOGO_PUBLISHABLE_KEY = os.getenv("LOGO_PUBLISHABLE_KEY") or ""
 BASE_IMG_URL = "https://img.logo.dev"
 
 
@@ -38,7 +38,7 @@ def _normalize_domain(hm_url: str) -> str:
 
 def fetch_logo_url(hm_url: str) -> str:
     domain = _normalize_domain(hm_url)
-    if not domain:
+    if not domain or not LOGO_PUBLISHABLE_KEY:
         return ""
     return f"{BASE_IMG_URL}/{domain}?token={LOGO_PUBLISHABLE_KEY}&size=300&retina=true"
 
