@@ -46,11 +46,19 @@ def get_values(code: str):
         return {"message": "데이터가 없습니다."}
 
     df = pd.DataFrame(data["list"])
-    df_cfs = df[df["fs_div"] == "CFS"]
+    if "fs_div" not in df.columns:
+        return {"message": "'fs_div' 정보가 없습니다."}
+
+    if (df["fs_div"] == "CFS").any():
+        df = df[df["fs_div"] == "CFS"]
+    elif (df["fs_div"] == "OFS").any():
+        df = df[df["fs_div"] == "OFS"]
+    else:
+        return {"message": "CFS/OFS 기준 데이터가 없습니다."}
 
     keywords = ["매출액", "영업이익", "당기순이익", "자본총계", "자산총계"]
-    df_filtered = df_cfs[
-        df_cfs["account_nm"].apply(lambda x: any(k in x for k in keywords))
+    df_filtered = df[
+        df["account_nm"].apply(lambda x: any(k in x for k in keywords))
     ]
 
     def clean(val):
