@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Text, TIMESTAMP
+from sqlalchemy import Column, Text, TIMESTAMP, Integer
 from sqlalchemy.dialects.mysql import VARCHAR
 from database import Base
 
@@ -26,3 +26,4 @@ class CompanyOverviews(Base):
     est_dt = Column(VARCHAR(8))
     acc_mt = Column(VARCHAR(2))
     modified_at = Column(TIMESTAMP)
+    favorite_count = Column(Integer, default=0)
