@@ -1,6 +1,5 @@
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
-from models.dart import Darts
 from models.company_overview import CompanyOverviews
 from database import get_db
 import os
@@ -16,17 +15,8 @@ router = APIRouter()
 @router.get("/getInfos")
 def get_company_info(name: str, db: Session = Depends(get_db)):
     result = (
-        db.query(
-            Darts.corp_code,
-            Darts.corp_name,
-            CompanyOverviews.adres,
-            CompanyOverviews.corp_cls,
-            CompanyOverviews.est_dt,
-            CompanyOverviews.hm_url,
-            CompanyOverviews.induty_name,
-        )
-        .join(CompanyOverviews, Darts.corp_code == CompanyOverviews.corp_code)
-        .filter(Darts.corp_name == name)
+        db.query(CompanyOverviews)
+        .filter(CompanyOverviews.corp_name == name)
         .first()
     )
 
