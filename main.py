@@ -17,8 +17,6 @@ origins = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3000/",
 ]
-
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
@@ -27,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 
 
 @app.middleware("http")
