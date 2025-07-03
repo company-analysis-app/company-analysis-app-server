@@ -24,6 +24,7 @@ class User(Base):
 
     preferences    = Column(MutableList.as_mutable(JSON), default=list, nullable=False)
     favorites      = Column(MutableList.as_mutable(JSON), default=list, nullable=False)
+    industryfavorites = Column(MutableList.as_mutable(JSON), default=list, nullable=False)
 
     # 생성 시각 (한국 시간)
     created_at = Column(
@@ -38,3 +39,13 @@ class User(Base):
         onupdate=lambda: datetime.now(SEOUL_TZ),
         nullable=False,
     )
+
+#산업군 
+class IndustryClassification(Base):
+    __tablename__ = "industry_classification"
+    id = Column(Integer, primary_key=True, index=True)
+    name_1 = Column(String(100), nullable=True)
+    name_2 = Column(String(100), nullable=True)
+    name_3 = Column(String(100), nullable=True)
+    name_4 = Column(String(100), nullable=True)
+    name_5 = Column(String(200), nullable=True)
