@@ -1,7 +1,8 @@
 # services/logo_api.py
 import os
-import requests
 from urllib.parse import urlparse
+from sqlalchemy.orm import Session
+from models.company_overview import CompanyOverviews
 
 LOGO_PUBLISHABLE_KEY = os.getenv("LOGO_PUBLISHABLE_KEY")
 BASE_IMG_URL = "https://img.logo.dev"
@@ -40,3 +41,22 @@ def fetch_logo_url(hm_url: str) -> str:
     if not domain:
         return ""
     return f"{BASE_IMG_URL}/{domain}?token={LOGO_PUBLISHABLE_KEY}&size=300&retina=true"
+
+
+def update_company_logo(comp: CompanyOverviews, db: Session) -> str:
+    """
+    CompanyOverviews 인스턴스를 받아
+    - logo 필드가 비어 있고 hm_url이 유효하면 API 호출 후 업데이트
+    - 업데이트된 logo 값을 반환
+    """
+    # 이미 로고가 있거나 hm_url이 없으면 기존 logo 반환
+    if comp.logo:
+        return comp.logo
+
+    logo_url = fetch_logo_url(comp.hm_url)
+    if logo_url:
+        comp.logo = logo_url
+        db.add(comp)
+        db.commit()
+        db.refresh(comp)
+    return comp.logo
