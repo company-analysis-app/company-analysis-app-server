@@ -40,7 +40,6 @@ class UserOut(UserBase):
     oauth_sub: str
     preferences: List[str]
     favorites: List[int]
-    industryfavorites: List[int]
     created_at: datetime
     updated_at: datetime
 
