@@ -1,34 +1,64 @@
-from fastapi import Depends, APIRouter
+# routers/dart_search.py
+from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
-from models.dart import Darts
+from models.company_overview import CompanyOverviews
 from database import get_db
-import os
-
-
-DART_API = os.getenv("dart_api_key")
+from services.logo_api import update_company_logo
 
 router = APIRouter()
 
-@router.get("/")
-def get_bords(keyword: str, db: Session=Depends(get_db)):
-    darts = db.query(
-        Darts.corp_code,
-        Darts.corp_name,
-    ).filter(
-        Darts.corp_name.ilike(f"%{keyword}%")
-    ).order_by(
-        Darts.corp_name.asc()
-    ).all()
 
-    if darts is None:
-        return {"message": "해당 회사명을 찾을 수 없습니다."}
-    
+@router.post("/")
+def get_bords(keyword: str, db: Session = Depends(get_db)):
+    companies = (
+        db.query(CompanyOverviews)
+        .filter(CompanyOverviews.corp_name.ilike(f"%{keyword}%"))
+        .order_by(CompanyOverviews.corp_name.asc())
+        .all()
+    )
+
+    if not companies:
+        raise HTTPException(status_code=404, detail="회사를 찾을 수 없습니다.")
+
     result_list = []
-    for row in darts:
-        result_list.append({
-            "corp_code": row.corp_code,
-            "corp_name": row.corp_name
-        })
+    for comp in companies:
+        # 로고가 없으면 업데이트
+        comp.logo = update_company_logo(comp, db)
+        result_list.append(
+            {
+                "corp_code": comp.corp_code,
+                "corp_name": comp.corp_name,
+                "hm_url": comp.hm_url,
+                "logo": comp.logo,
+            }
+        )
 
     return result_list
 
+
+@router.post("/bestCompanies")
+def get_best_companies(db: Session = Depends(get_db)):
+    best_results = (
+        db.query(CompanyOverviews)
+        .order_by(CompanyOverviews.favorite_count.desc())
+        .limit(3)
+        .all()
+    )
+
+    if not best_results:
+        return {"message": "회사를 찾을 수 없습니다."}
+
+    result_list = []
+    for comp in best_results:
+        # 로고가 없으면 업데이트
+        comp.logo = update_company_logo(comp, db)
+        result_list.append(
+            {
+                "corp_code": comp.corp_code,
+                "corp_name": comp.corp_name,
+                "favorite_count": comp.favorite_count,
+                "logo": comp.logo,
+            }
+        )
+
+    return result_list

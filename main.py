@@ -4,7 +4,7 @@ import os
 load_dotenv(override=True)
 
 from fastapi import FastAPI, Request, Response
-from routers import auth, users, dart, naver_news, summary, dart_search
+from routers import auth, users, dart, naver_news, summary, dart_search, industry_search
 from database import Base, engine
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,8 +17,6 @@ origins = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3000/",
 ]
-
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
@@ -27,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 
 
 @app.middleware("http")
@@ -47,3 +46,4 @@ app.include_router(dart.router, prefix="/darts", tags=["Darts"])
 app.include_router(naver_news.router, prefix="/naver", tags=["Naver News"])
 app.include_router(summary.router, prefix="/summary", tags=["Summary"])
 app.include_router(dart_search.router, prefix="/dartsSearch", tags=["DartsSearch"])
+app.include_router(industry_search.router, prefix="/industrySearch", tags=["IndustrySearch"])
