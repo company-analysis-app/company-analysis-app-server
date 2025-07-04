@@ -1,4 +1,4 @@
-# 기업 분석 웹 애플리케이션 백엔드
+# 기업 분석 웹 애플리케이션 (백엔드)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
