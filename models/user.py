@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON, DateTime, UniqueConstraint, ForeignKey
+from sqlalchemy import Column, Integer, String, JSON, DateTime, UniqueConstraint
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import relationship
 from database import Base
@@ -40,25 +40,3 @@ class User(Base):
         onupdate=lambda: datetime.now(SEOUL_TZ),
         nullable=False,
     )
-
-#산업군 
-class IndustryClassification(Base):
-    __tablename__ = "industry_classification"
-    id = Column(Integer, primary_key=True, index=True)
-    name_1 = Column(String(100), nullable=True)
-    name_2 = Column(String(100), nullable=True)
-    name_3 = Column(String(100), nullable=True)
-    name_4 = Column(String(100), nullable=True)
-    name_5 = Column(String(200), nullable=True)
-
-class UserIndustryFavorite(Base):
-    __tablename__ = "user_industry_favorite"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    # industry_id에는 code_2, code_3, code_4, code_5 등 사용자가 선택한 depth의 code 값만 저장됨
-    industry_id = Column(Integer, ForeignKey("industry_classification.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    __table_args__ = (UniqueConstraint("user_id", "industry_id", name="uniq_user_industry"),)
-
-    user = relationship("User", back_populates="favorites_industries")
-    industry = relationship("IndustryClassification")
