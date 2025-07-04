@@ -1,6 +1,6 @@
 # services/logo_api.py
 import os
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from sqlalchemy.orm import Session
 from models.company_overview import CompanyOverviews
 
@@ -46,13 +46,20 @@ def fetch_logo_url(hm_url: str) -> str:
 def update_company_logo(comp: CompanyOverviews, db: Session) -> str:
     """
     CompanyOverviews 인스턴스를 받아
-    - logo 필드가 비어 있고 hm_url이 유효하면 API 호출 후 업데이트
-    - 업데이트된 logo 값을 반환
+    - logo 필드가 비어있거나 token=None 이면 새로 API 호출 후 업데이트
+    - 그 외 이미 유효한 logo 값이 있으면 그대로 반환
     """
-    # 이미 로고가 있거나 hm_url이 없으면 기존 logo 반환
     if comp.logo:
-        return comp.logo
+        # URL 파싱해서 token 파라미터 값을 꺼내오기
+        parsed = urlparse(comp.logo)
+        params = parse_qs(parsed.query)
+        token = params.get("token", [None])[0]
 
+        # token 이 None 이 아니면(=유효한 key 로 이미 갱신된 URL 이면) 바로 반환
+        if token and token.lower() != "none":
+            return comp.logo
+
+    # logo 가 비어있거나 token=None 인 경우, 새로 fetch
     logo_url = fetch_logo_url(comp.hm_url)
     if logo_url:
         comp.logo = logo_url
