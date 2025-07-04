@@ -68,6 +68,7 @@ def get_data(industry_code: int, db: Session = Depends(get_db)):
             "corp_code": row.corp_code,
             "corp_name": row.corp_name,
             "induty_code": row.induty_code,
+            "induty_name": row.induty_name,
             "logo": row.logo,
         })
 
