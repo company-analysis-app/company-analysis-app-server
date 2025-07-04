@@ -30,6 +30,7 @@ def get_bords(keyword: str, db: Session = Depends(get_db)):
                 "corp_name": comp.corp_name,
                 "hm_url": comp.hm_url,
                 "logo": comp.logo,
+                "category": comp.induty_name,
             }
         )
 
@@ -58,6 +59,7 @@ def get_best_companies(db: Session = Depends(get_db)):
                 "corp_name": comp.corp_name,
                 "favorite_count": comp.favorite_count,
                 "logo": comp.logo,
+                "category": comp.induty_name,
             }
         )
 
