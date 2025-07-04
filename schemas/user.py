@@ -50,10 +50,15 @@ class UserOut(UserBase):
 class IndustryCategoryNode(BaseModel):
     id: int
     name_1: Optional[str]
+    code_1: Optional[str]
     name_2: Optional[str]
+    code_2: Optional[str]
     name_3: Optional[str]
+    code_3: Optional[str]
     name_4: Optional[str]
+    code_4: Optional[str]
     name_5: Optional[str]
+    code_5: Optional[str]
 
     class Config:
         from_attributes = True
