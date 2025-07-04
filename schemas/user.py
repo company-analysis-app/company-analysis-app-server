@@ -44,4 +44,16 @@ class UserOut(UserBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+
+class IndustryCategoryNode(BaseModel):
+    id: int
+    name_1: Optional[str]
+    name_2: Optional[str]
+    name_3: Optional[str]
+    name_4: Optional[str]
+    name_5: Optional[str]
+
+    class Config:
+        from_attributes = True
