@@ -35,7 +35,11 @@ def update_preferences(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    current_user.preferences = prefs.preferences
+    if current_user.preferences is None:
+        current_user.preferences = []
+    else:
+        current_user.preferences.clear()
+    current_user.preferences.extend(prefs.preferences)
     db.add(current_user)
     db.commit()
     db.refresh(current_user)
@@ -112,6 +116,38 @@ def remove_industry_favorite(
         db.commit()
     rows = db.query(UserIndustryFavorite).filter_by(user_id=current_user.id).all()
     return [row.industry_id for row in rows]
+
+@router.post("/users/industry-favorites")
+def add_industry_favorite(code: str, db: Session = Depends(get_db), user: UserModel = Depends(get_current_user)):
+    # code가 일치하는 industry를 찾는다
+    industry = db.query(IndustryClassification).filter(
+        (IndustryClassification.code_2 == code) |
+        (IndustryClassification.code_3 == code) |
+        (IndustryClassification.code_4 == code) |
+        (IndustryClassification.code_5 == code)
+    ).first()
+
+    if not industry:
+        raise HTTPException(status_code=404, detail="해당 코드의 산업군이 존재하지 않습니다.")
+
+    # 이미 등록되어 있으면 무시
+    existing = db.query(UserIndustryFavorite).filter_by(
+        user_id=user.id,
+        industry_id=industry.id
+    ).first()
+
+    if existing:
+        return {"message": "이미 등록된 관심 산업군입니다."}
+
+    # 새로 추가
+    favorite = UserIndustryFavorite(
+        user_id=user.id,
+        industry_id=industry.id
+    )
+    db.add(favorite)
+    db.commit()
+
+    return {"message": "관심 산업군 등록 완료"}
 
 @router.get("/industry-favorites", response_model=List[int])
 def get_industry_favorites(
